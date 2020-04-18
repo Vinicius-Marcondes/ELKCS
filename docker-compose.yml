@@ -1,0 +1,137 @@
+version: "3.7"
+
+services:
+  elasticsearch:
+    # Needs " sysctl -w vm.max_map_count=262144 " to work.
+    build:
+      context: ./volumes/elasticsearch
+    image: elasticsearch_mod:7.6.2
+    container_name: elasticsearch
+    hostname: Elasticsearch-local
+    environment:
+      - node.name=Local-elasticsearch
+      #- "bootstrap.memory_lock=true"
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - cluster.name=Local-ELK-Docker-Cluster
+      - cluster.initial_master_nodes=Local-elasticsearch
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./volumes/elasticsearch:/usr/share/elasticsearch/data
+      - ./volumes/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    networks:
+      - stack-net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.6.2
+    container_name: kibana
+    hostname: Kibana-local
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+    volumes:
+      - ./volumes/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    networks:
+      - stack-net
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    build:
+      context: volumes/logstash
+    image: logstash:7.6.2
+    container_name: logstash
+    hostname: Logstash-local  
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      - ./volumes/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./volumes/logstash/pipeline/logstash.conf:/etc/logstash/conf.d/logstash.conf
+    networks:
+      stack-net:
+        # If you needs to get data from an outside filebeat you need to set an IP.
+        # ipv4_address: 172.100.22.11
+    ports:
+      - 5044:5044
+    depends_on:
+      - kibana
+      - elasticsearch
+
+  filebeat:
+    build:
+      context: volumes/filebeat
+    image: filebeat:7.6
+    container_name: filebeat
+    hostname: Filebeat-local
+    volumes:
+      - ./volumes/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./volumes/nginx/logs:/var/log/nginx
+        # Path to the log folder
+      - /HYBRIS/hybris/log/tomcat:/var/log/hybris
+    networks:
+      - stack-net
+    depends_on:
+      - elasticsearch
+      - logstash
+
+  metricbeat_docker:
+    build:
+      context: volumes/metricbeatDocker
+    image: metricbeat:7.6.2
+    container_name: metricbeat_docker
+    hostname: Metricbeat-Docker-local
+    environment:
+      - name=docker_metricbeat
+      #- user=root
+      - system.hostfs=/hostfs
+      - ELASTICSEARCH_HOSTS="http://elasticsearch:9200"
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+    volumes:
+      # - type: bind
+      #   source: ./volumes/metricbeatDocker/metricbeat_docker.yml
+      #   target: /usr/share/metricbeat/metricbeat.yml
+      #   read_only: false
+      - type: bind
+        source: /proc
+        target: /hostfs/proc
+        read_only: true
+      - type: bind
+        source: /sys/fs/cgroup
+        target: /hostfs/sys/fs/cgroup
+        read_only: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /hostfs/var/run/docker.sock
+        read_only: true
+      - type: bind
+        source: /
+        target: /hostfs
+        read_only: true
+    depends_on:
+      - elasticsearch
+      - kibana
+    networks:
+      - stack-net
+
+  nginx:
+    # This can be removed if you already have a proxy.
+    image: nginx:latest
+    container_name: nginx
+    hostname: Baby-dev-Nginx
+    volumes:
+      - ./volumes/nginx/conf.d:/etc/nginx/conf.d
+      - ./volumes/nginx/logs:/var/log/nginx
+    networks:
+      stack-net:
+        ipv4_address: 172.100.22.10
+    depends_on:
+      - kibana
+
+networks:
+  stack-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.100.22.0/24

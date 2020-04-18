@@ -1,0 +1,43 @@
+---
+
+# Logstash config file based on Elastic Logstash Reference [7.6]
+# Author: Vinícius Marcondes
+# Date: 16/04/2020
+
+# ------------ Node identity ---------------
+
+node.name: Logstash-Baby-Dev
+
+# ------------ Pipeline Configuration Settings --------------
+
+# path.config: /usr/share/logstash/pipeline/
+
+# ------------ Metrics Settings ------------
+
+# Enable this to expose the metris at the endpoit
+# http.host: localhost
+# http.port: 9600
+
+# ------------ Debugging Settings --------------
+
+log.level: info
+log.format: json
+path.logs: /usr/share/logstash/logs
+
+# ------------ Monitoring Settings (not applicable for OSS build)--------------
+
+# monitoring.enabled: true
+# monitoring.elasticsearch.hosts: ["http://elasticsearch:9200"]
+# monitoring.elasticsearch.username: logstash_system
+# monitoring.elasticsearch.password: changeme
+# monitoring.collection.interval: 10s
+
+# ------------ X-Pack Settings (not applicable for OSS build)--------------
+
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch.hosts: http://elasticsearch:9200
+xpack.monitoring.elasticsearch.username: "logstash_system"
+xpack.monitoring.elasticsearch.password: "changeme"
+xpack.monitoring.collection.interval: 10s
+
+...

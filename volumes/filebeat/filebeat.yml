@@ -1,0 +1,91 @@
+---
+
+# Filebeat config file based on Elastic Filebeat Reference [7.6]
+# Author: Vinícius Marcondes
+# Date: 16/04/2020
+
+#==========================  Modules configuration =============================
+filebeat.config.modules:
+  # Glob pattern for configuration loading
+  path: ${path.config}/modules.d/*.yml
+  
+filebeat.modules:
+
+#-------------------------------- Nginx Module --------------------------------
+
+- module: nginx
+  # Access logs
+  access:
+    enabled: true
+    var.paths: ["/var/log/nginx/kibana_server_access.log"]
+  # Error logs
+  error:
+    enabled: true
+    var.paths: ["/var/log/nginx/kibana_server_error.log"]
+
+#================================= Agent Settings ================================
+
+name: ${HOSTNAME}
+tags: ["hybris", "local"]
+cluster.name: "docker-cluster"
+
+#================================= Filebeat inputs ===============================
+
+filebeat.inputs:
+  - type: log
+    paths:
+      - /var/log/hybris/console-*.log
+    scan_frequency: 10s
+    fields:
+      log_prefix: hybris
+      log_idx: hybris-local-logs
+    fields_under_root: false
+
+#================================= Outputs =======================================
+
+output.logstash:
+  enabled: true
+  compression_level: 3
+  index: 'hybris-local'
+  hosts: ["logstash:5044"] 
+
+#================================= Kibana ========================================
+
+setup.kibana:
+  host: "kibana:5601"
+  username: "elastic"
+  password: "changeme"
+
+#================================= Logging =======================================
+
+logging:
+  level: info
+  # metrics.enabled: true
+  # metrics.period: 30s
+  selectors: ["*"]
+  to_files: true
+  files:
+    path: /usr/share/filebeat/logs
+    name: filebeat
+    rotateeverybytes: 10485760 # = 10MB
+    keepfiles: 7
+
+#================================= X-Pack Monitoring =============================
+# Allows to monitor Filebeat via Kibana's Dashboard
+xpack.security.enabled: true
+monitoring.enabled: true
+monitoring.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  username: "beats_system"
+  password: "changeme"
+  metrics.period: 10s
+  state.period: 1m
+
+#================================= HTTP Endpoint =================================
+
+# Enable this to expose the metris at the endpoit
+# http.enabled: true
+# http.host: localhost
+# http.port: 5066
+
+...
