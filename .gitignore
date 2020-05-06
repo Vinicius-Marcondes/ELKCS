@@ -1,3 +1,2 @@
-/volumes/elasticsearch/*
-/volumes/nginx/logs/*
-/volumes/elasticsearch/plugins/*
+/volumes/elastic/elastic01/data/*
+/volumes/elastic/elastic02/data/*

@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  metricbeat-nginx:
+    image: docker.elastic.co/beats/metricbeat:7.6.2
+    hostname: metricbeat-nginx
+    container_name: metricbeat-nginx
+    environment:
+      - ELASTICSEARCH_HOSTS=192.168.18.2
+      - ELASTICSEARCH_USERNAME="elastic"
+      - ELASTICSEARCH_PASSWORD="changeme"
+    volumes:
+      - ./volumes/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      - ./volumes/nginx/nginx.yml:/usr/share/metricbeat/modules.d/nginx.yml
+    networks:
+      metrics-net:
+        ipv4_address: 172.100.24.5
+
+networks:
+  metrics-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.100.24.0/24

@@ -1,0 +1,32 @@
+cluster.name: "es-docker-cluster"
+
+filebeat.inputs:
+  - type: log
+    paths:
+      - /var/log/hybris/console-*.log
+    scan_frequency: 10s
+    fields:
+      log_prefix: hd
+      log_idx: hybris-local
+
+output.logstash:
+        hosts: ["192.168.18.2:5044"] 
+  
+logging:
+  files:
+    rotateeverybytes: 10485760 # = 10MB
+  selectors: ["*"]
+  level: warning
+
+setup.kibana:
+  host: "192.168.18.2:5601"
+  username: "elastic"
+  password: "changeme"
+
+monitoring:
+  enabled: true
+  override_cluster_uuid: "es-docker-cluster"
+  elasticsearch:
+    hosts: ["http://192.168.18.2:9200"]
+    username: "beats_system"
+    password: "changeme"

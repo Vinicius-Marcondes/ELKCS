@@ -1,0 +1,23 @@
+---
+version: '3'
+
+services:
+  filebeat:
+    build:
+      context: ./volumes/filebeat
+    image: docker.elastic.co/beats/filebeat:7.6.2
+    container_name: filebeat
+    hostname: Filebeat
+    volumes:
+      - ./volumes/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - /HYBRIS/hybris/log/tomcat:/var/log/hybris
+    networks:
+      filebeat-net:
+        ipv4_address: 172.100.23.5
+        
+networks:
+  filebeat-net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.100.23.0/24

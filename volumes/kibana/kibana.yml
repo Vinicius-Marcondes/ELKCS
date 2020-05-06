@@ -4,14 +4,14 @@
 # Author: Vinícius Marcondes
 # Date: 16/04/2020
 
-
 server.port: 5601
 server.host: "0.0.0.0"
 server.basePath: "/kibana" # this makes kibana work with nginx
-# server.rewriteBasePath: true # server.basePath needs this sometimes
+server.rewriteBasePath: true # server.basePath needs this
 server.name: "kibana"
 
-xpack.monitoring.ui.container.elasticsearch.enabled: true
 elasticsearch.username: "elastic"
 elasticsearch.password: "changeme"
-#elasticsearch.url: elasticsearch:9200
+elasticsearch.hosts: 
+  - http://172.100.22.4:9200 
+  - http://172.100.22.9:9200 

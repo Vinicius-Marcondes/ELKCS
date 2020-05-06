@@ -1,0 +1,9 @@
+---
+http.host: 0.0.0.0
+path.config: "/etc/logstash/conf.d/logstash.conf"
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch.hosts: 
+  - "http://172.100.22.4:9200"
+  - "http://172.100.22.9:9200"
+xpack.monitoring.elasticsearch.username: "logstash_system"
+xpack.monitoring.elasticsearch.password: "changeme"
