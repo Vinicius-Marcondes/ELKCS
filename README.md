@@ -62,38 +62,6 @@ scp /usr/share/elasticsearch/elastic-certificates.p12 elk@192.168.56.103:/home/e
 
 systemctl restart elasticsearch 
 
-.::On Node 2::.
-cp /home/elk/elastic-certificates.p12 /etc/elasticsearch/
-
-nano /etc/elasticsearch/elasticsearch.yml
-- Copy and paste following 5 lines in elasticsearch.yml file 
-xpack.security.enabled: true
-xpack.security.transport.ssl.enabled: true
-xpack.security.transport.ssl.verification_mode: certificate
-xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
-xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
-
-chown root:elasticsearch /etc/elasticsearch/elastic-certificates.p12
-chmod 660 /etc/elasticsearch/elastic-certificates.p12
-
-systemctl restart elasticsearch 
-
-.::On Node 3::.
-cp /home/elk/elastic-certificates.p12 /etc/elasticsearch/
-
-nano /etc/elasticsearch/elasticsearch.yml
-- Copy and paste following 5 lines in elasticsearch.yml file 
-xpack.security.enabled: true
-xpack.security.transport.ssl.enabled: true
-xpack.security.transport.ssl.verification_mode: certificate
-xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
-xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
-
-chown root:elasticsearch /etc/elasticsearch/elastic-certificates.p12
-chmod 660 /etc/elasticsearch/elastic-certificates.p12
-
-systemctl restart elasticsearch 
-
 - Set passwords for default users
 cd /usr/share/elasticsearch
 bin/elasticsearch-setup-passwords interactive
