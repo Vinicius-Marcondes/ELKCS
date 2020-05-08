@@ -1,0 +1,31 @@
+# Module: elasticsearch
+# Docs: https://www.elastic.co/guide/en/beats/filebeat/7.6/filebeat-module-elasticsearch.html
+
+- module: elasticsearch
+
+  server:
+    enabled: true
+    var.paths:
+      - ${HOME}/logs/*_server.json 
+  
+  gc:
+    enabled: true
+    var.paths:
+      - ${HOME}/logs/gc.log.[0-9]*
+      - ${HOME}/logs/gc.log
+
+  audit:
+    enabled: true
+    var.paths:
+      - ${HOME}/logs/*_audit.json 
+
+  slowlog:
+    enabled: true
+    var.paths:
+      - ${HOME}/logs/*_index_search_slowlog.json
+      - ${HOME}/logs/*_index_indexing_slowlog.json
+
+  deprecation:
+    enabled: true
+    var.paths:
+      - ${HOME}/logs/*_deprecation.json

@@ -1,0 +1,23 @@
+---
+filebeat.config.modules:
+  path: ./modules.d/*.yml
+
+setup:
+  kibana:
+    host: "172.100.22.6:5601/kibana"
+    username: "elastic"
+    password: '${ELASTICSEARCH_PASSWORD:}'
+  ilm:
+    overwrite: true
+
+output.elasticsearch:
+  hosts: ["172.100.22.4:9200","172.100.22.9:9200"]
+  username: "elastic"
+  password: '${ELASTICSEARCH_PASSWORD:}'
+
+monitoring:
+  enabled: true
+  elasticsearch:
+    username: "beats_system"
+    password: '${ELASTICSEARCH_PASSWORD:}'  
+...
