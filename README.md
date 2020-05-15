@@ -23,81 +23,51 @@ To stop the cluster:
 ```
 docker-compose down
 ```
-### Setting up 
 
+### Setting up
 
+# Creating Elastisearch Nodes
+* Create the stack-cert on Master Node ( es01 )
 
+```
+$ docker exec es01 bin/elasticsearc-certutil ca && mv elastic-stack.p12 config/certs/
 
+```
+> *Obs*: no need to create a password, if you want you'll need extra steps to me the cluster works. You can find the information you nedd [here](https://www.elastic.co/guide/en/elastic-stack-get-started/7.7/get-started-docker.html#get-started-docker-tls) 
 
+* On Each Node ( including Master )
+```
+$ docker exec esXX bin/elasticsearch-certutil cert --ca /config/certs/elastic-stack-ca.p12 && mv elastic-certificates.p12 /config/certs
+```
+After generating the certs you can uncomment the volume that binds the elasticsearch.yml from each node on docker-compose.yml
+and run the following commands:
+```
+$ chown 1000:0 -R volumes/
+```
 
-#Creating Elastisearch Nodes
-INSTRUCTIONS:
-curl -X GET "localhost:9200/_cluster/health?pretty"
-
-##On Each Node
-Generate a stack certificate for your cluster 
-$ ~/bin/elasticsearch-certutil ca
-> *Obs*: no need to create a password, if you want you'll need extra steps to me the cluster works. You can find the information you nedd [here](h) 
-
-bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
-
-
-cp elastic-certificates.p12 /etc/elasticsearch/
-
-cd /etc/elasticsearch/
-ls -l
-nano /etc/elasticsearch/elasticsearch.yml
-- Copy and paste following 5 lines in elasticsearch.yml file
-xpack.security.enabled: true
-xpack.security.transport.ssl.enabled: true
+#### Running a single node
+To run a single elasticsearch node you don't need to set up the certs, so you can remove these lines from your elasticsearch.yml file:
+``` 
 xpack.security.transport.ssl.verification_mode: certificate
 xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
 xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+```
+## Set passwords for default users
+You have two options, set ut the passwords manually or automatic, if you choose automatic don't forget to save the passwords, otherwise you won't be able to use your cluster.
+* Manually
+```
+$ docker exec es01 bin/elasticsearch-setup-passwords interactive -b
+```
+* Automatic
+```
+$ docker exec es01 bin/elasticsearch-setup-passwords auto
+```
+## Test cluster health:
+```
+$ curl -u elastic:<your_awesome_password>  -XGET "172.100.22.4:9200/_cluster/health?pretty"
+```
 
-chown root:elasticsearch /etc/elasticsearch/elastic-certificates.p12
-chmod 660 /etc/elasticsearch/elastic-certificates.p12
-
-scp /usr/share/elasticsearch/elastic-certificates.p12 elk@192.168.56.102:/home/elk/
-scp /usr/share/elasticsearch/elastic-certificates.p12 elk@192.168.56.103:/home/elk/
-
-systemctl restart elasticsearch 
-
-- Set passwords for default users
-cd /usr/share/elasticsearch
-bin/elasticsearch-setup-passwords interactive
-demo passwords:
-elastic:elastic
-apm_system:apmsystem
-kibana:kibana
-logstash_system:logstashsytem
-beats_system:beatssystem
-remote_monitoring_user:remotemonitoringuser
-- you can generate random passwords automatic using following command
-bin/elasticsearch-setup-passwords auto
-- be sure that you will remember them
-
-Test cluster health:
-curl -u elastic:elastic  -X GET "localhost:9200/_cluster/health?pretty"
-
-Configure Kibana on Node 1
-
-/bin/systemctl daemon-reload
-/bin/systemctl enable kibana.service
-nano /etc/kibana/kibana.yml 
-Change followinglines:
-server.port: 8801
-server.host: "192.168.56.101"
-elasticsearch.username: "kibana"
-elasticsearch.password: "kibana"
-
-sudo systemctl start kibana
-create test user
-
-
-
-
-
-
+( in progress....)
 
 ### Contact
 * Twitter - [@ViniciusMarc_](https://twitter.com/ViniciusMarc_)
