@@ -12,10 +12,9 @@ A complete ELK Stack environment containerized and able to be used in DEV or PRO
 For now you can create a cluster of Elasticsearch to handle more data processing and with a little tricks and magic be able to run the cluster on swarm mode.
 
 ## How to use
-Here we need some adaptations, as the stack is suposed to be used on DEV or PROD( still testing ) the x-autentication 
+Here we need some adaptations, as the stack is suposed to be used on DEV or PROD( still testing ) the x-autentication needs to be enabled. 
 ### Basic
 To start the stack:
-
 ```
 docker-compose up -d 
 ```
