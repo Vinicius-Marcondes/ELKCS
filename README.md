@@ -24,9 +24,9 @@ To stop the cluster:
 docker-compose down
 ```
 
-### Setting up
+## Setting up the cluster
 
-# Creating Elastisearch Nodes
+### Creating Elastisearch Nodes
 * Create the stack-cert on Master Node ( es01 )
 
 ```
