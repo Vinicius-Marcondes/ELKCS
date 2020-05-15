@@ -14,11 +14,11 @@ For now you can create a cluster of Elasticsearch to handle more data processing
 ## How to use
 Here we need some adaptations, as the stack is suposed to be used on DEV or PROD( still testing ) the x-autentication needs to be enabled. 
 ### Basic
-To start the stack:
+To start the cluster:
 ```
 docker-compose up -d 
 ```
-To stop the cluster:
+To stop the cluster :
 ```
 docker-compose down
 ```
