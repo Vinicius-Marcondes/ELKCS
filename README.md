@@ -8,7 +8,7 @@ A complete ELK Stack environment containerized and able to be used in DEV or PRO
 * Metricbeat for Metrics Monitoring
 * Filebeat to collect logs
 
-## Cluster
+### Status
 For now you can create a cluster of Elasticsearch to handle more data processing and with a little tricks and magic be able to run the cluster on swarm mode.
 
 ## How to use
