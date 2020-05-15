@@ -61,7 +61,7 @@ $ docker exec es01 bin/elasticsearch-setup-passwords interactive -b
 ```
 $ docker exec es01 bin/elasticsearch-setup-passwords auto
 ```
-## Test cluster health:
+## Test cluster health
 ```
 $ curl -u elastic:<your_awesome_password>  -XGET "172.100.22.4:9200/_cluster/health?pretty"
 ```
