@@ -32,7 +32,7 @@ docker-compose down
 $ docker exec es01 bin/elasticsearc-certutil ca && mv elastic-stack.p12 config/certs/
 
 ```
-> *Obs*: no need to create a password, if you want you'll need extra steps to me the cluster works. You can find the information you nedd [here](https://www.elastic.co/guide/en/elastic-stack-get-started/7.7/get-started-docker.html#get-started-docker-tls) 
+> *Obs*: no need to create a password, if you want you'll need extra steps to me the cluster works. You can find the information you need [here](https://www.elastic.co/guide/en/elastic-stack-get-started/7.7/get-started-docker.html#get-started-docker-tls) 
 
 * On Each Node ( including Master )
 ```
