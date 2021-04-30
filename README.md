@@ -12,7 +12,7 @@ A complete ELK Stack environment containerized and able to be used in DEV or PRO
 For now you can create a cluster of Elasticsearch to handle more data processing and with a little tricks and magic be able to run the cluster on swarm mode.
 
 ## How to use
-Here we need some adaptations, as the stack is suposed to be used on DEV or PROD( still testing ) the x-autentication needs to be enabled. 
+Here we need some adaptations, as the stack is suposed to be used on development or production(only for reading logs) the x-autentication needs to be enabled. 
 ### Basic
 To start the cluster
 ```
@@ -32,7 +32,7 @@ docker-compose down
 $ docker exec es01 bin/elasticsearc-certutil ca && mv elastic-stack.p12 config/certs/
 
 ```
-> *Obs*: no need to create a password, if you want you'll need extra steps to me the cluster works. You can find the information you need [here](https://www.elastic.co/guide/en/elastic-stack-get-started/7.7/get-started-docker.html#get-started-docker-tls) 
+> *Obs*: no need to create a password, if you want you'll need extra steps to make the cluster works. You can find the information you need [here](https://www.elastic.co/guide/en/elastic-stack-get-started/7.7/get-started-docker.html#get-started-docker-tls) 
 
 * On Each Node ( including Master )
 ```
@@ -71,5 +71,3 @@ $ curl -u elastic:<your_awesome_password>  -XGET "172.100.22.4:9200/_cluster/hea
 ### Contact
 * Twitter - [@ViniciusMarc_](https://twitter.com/ViniciusMarc_)
 * Linkedin - [Vinícius Vieira](https://www.linkedin.com/in/vinícius-vieira-0712251a3)
-
-Another test2
